@@ -1,0 +1,52 @@
+{
+  "name": "react-browser-loader",
+  "version": "1.0.0",
+  "description": "在前端编译react多文件代码，包含插件机制，基于此定制开发专属你的前端物料平台",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "npx webpack serve",
+    "build": "npx webpack  build",
+    "clean": "rm -rf build",
+    "test": "jest --env=jsdom --colors --coverage test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeryqwq/react-browser-loader.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jeryqwq/react-browser-loader/issues"
+  },
+  "homepage": "https://github.com/jeryqwq/react-browser-loader#readme",
+  "dependencies": {
+    "@babel/core": "7.17.8",
+    "@babel/plugin-transform-modules-commonjs": "^7.17.7",
+    "@babel/plugin-transform-modules-umd": "^7.16.7",
+    "@babel/preset-react": "^7.16.7",
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "path-browserify": "^1.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.1.1",
+    "html-webpack-plugin": "^5.5.0",
+    "jest": "^22.4.4",
+    "process": "^0.11.10",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^22.0.2",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.5.2",
+    "webpack": "^5.71.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.1"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    }
+  }
+}

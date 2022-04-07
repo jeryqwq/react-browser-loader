@@ -1,12 +1,4 @@
-# react-browser-loader
-在前端浏览器环境内编译react多文件代码，包含插件机制，可基于此定制开发专属你的前端在线编码平台或者前端物料平台
-<img src="./demo.jpg"/>
-
-### Demo
-```js
-import loader from 'react-browser-loader'
-import React from 'react';
-import ReactDOM from 'react-dom';
+import loader from './index'
 declare global {
   interface Window {
     React: any;
@@ -15,10 +7,10 @@ declare global {
 }
 loader({
   el: document.getElementById('app') as HTMLElement,
-  React,
-  ReactDOM,
-  entry: './app.js', // 入口文件
-  files: { // 所有文件内容
+  React: window.React as any,
+  ReactDOM: window.ReactDOM as any,
+  entry: './app.js',
+  files: {
       './app.js': `
       import CompA from './a.js'
         const a = <div style={{color: 'red'}}>456</div>
@@ -57,6 +49,3 @@ loader({
     `
   }
 })
-
-
-```
