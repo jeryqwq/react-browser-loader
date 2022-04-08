@@ -16,11 +16,8 @@ import preset_react from '@babel/preset-react';
 import { parseDeps } from './utils/index';
 let moduleCache : Record<string, string> = {};
 export default function (config: GlobalConfig) {
-  const { React, ReactDOM } = config;
   const inputFile = config.entry
-  const App = parseSingleFile(config.files, inputFile, config);
-  ReactDOM.render(App.default(), config.el)
-  console.log(App, '----')
+  return parseSingleFile(config.files, inputFile, config);
 }
 
 function parseSingleFile(files: Record<string, string>, filename: string, config: GlobalConfig): Record<string, any> {
@@ -39,20 +36,29 @@ function parseSingleFile(files: Record<string, string>, filename: string, config
     highlightCode: false,
     compact: true,
     comments: false });
-  moduleCache[filename] = transformed.code;
+    moduleCache[filename] = transformed.code;
   // console.log(transformed, deps, `transformed file${filename}`);
-
   return createCjsModule(filename, transformed.code, config);
 }
 
 function createCjsModule(refPath: string, source: string, config: GlobalConfig) {
   const require = function (relPath) {
-    console.log('require', relPath);
-    return parseSingleFile(config.files, relPath, config);
+    let module
+    console.error('require', relPath);
+    switch (relPath) {
+      case 'react':
+        return config.React;
+      case 'react-dom':
+        return config.ReactDOM;
+    }
+    if(config.parser.moduleParser) {
+      module = config.parser.moduleParser(relPath, config)
+    }
+    return module || parseSingleFile(config.files, relPath, config);
   };
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const pathResolve = function ({ refPath, relPath }) {
-    console.log('pathResolve', refPath, relPath);
+    console.warn('pathResolve', refPath, relPath);
     return config.files[refPath];
   };
   const importFunction = async function (relPath: string) {

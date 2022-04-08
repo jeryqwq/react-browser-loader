@@ -4,5 +4,10 @@ declare type GlobalConfig = {
   React: any,
   ReactDOM: any,
   entry: string, // 入口文件
+  addStyle:(styleContent: string) => void,
+  parser: {
+    moduleParser?: (_: string, config: GlobalConfig) => any,
+    pathParser?:(_: string, config: GlobalConfig) => string,
+  },
 }
 
