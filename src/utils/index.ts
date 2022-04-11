@@ -4,6 +4,9 @@ import {
   transformFromAstAsync as babel_transformFromAstAsync,
   types as t,
 } from '@babel/core';
+import {
+	posix as Path
+} from 'path'
 export function parseDeps(fileAst: t.File): string[] {
   const requireList: string[] = [];
 
@@ -24,4 +27,29 @@ export function parseDeps(fileAst: t.File): string[] {
   });
 
   return requireList;
+}
+export const defaultPathResolve = ({ refPath, relPath } : PathContext) => {
+
+	// initial resolution: refPath is not defined
+	if ( refPath === undefined )
+		return relPath;
+
+	const relPathStr = relPath.toString();
+	
+	// is non-relative path ?
+	if ( relPathStr[0] !== '.' )
+		return relPath;
+		
+	// note :
+	//  normalize('./test') -> 'test'
+	//  normalize('/test') -> '/test'
+
+	return Path.normalize(Path.join(Path.dirname(refPath.toString()), relPathStr));
+}
+export const isCompileFile  = (path: string) => {
+  const reg = RegExp(/(?:js|jsx|ts)$/)
+  return reg.test(path);
+}
+export const getFileType = (path: string) => {
+  return path.split('.').pop();
 }

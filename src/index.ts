@@ -13,7 +13,7 @@ import babelPluginTransformModulesCommonjs from '@babel/plugin-transform-modules
 // import babelPluginTransformModuleUmd from '@babel/plugin-transform-modules-umd'
 // import babelPluginTransformReactJsx from '@babel/plugin-transform-react-jsx';
 import preset_react from '@babel/preset-react';
-import { parseDeps } from './utils/index';
+import { defaultPathResolve, getFileType, isCompileFile, parseDeps } from './utils/index';
 let moduleCache : Record<string, string> = {};
 export default function (config: GlobalConfig) {
   const inputFile = config.entry
@@ -21,6 +21,8 @@ export default function (config: GlobalConfig) {
 }
 
 function parseSingleFile(files: Record<string, string>, filename: string, config: GlobalConfig): Record<string, any> {
+  filename = filename.startsWith('.') ? filename.replace('.', '') : filename;
+  // const fileType = getFileType(filename)  // 先不考虑TS的支持
   const ast = babel_parse(files[filename], {
     sourceType: 'module',
     sourceFilename: filename,
@@ -38,41 +40,51 @@ function parseSingleFile(files: Record<string, string>, filename: string, config
     comments: false });
     moduleCache[filename] = transformed.code;
   // console.log(transformed, deps, `transformed file${filename}`);
-  return createCjsModule(filename, transformed.code, config);
+  return fileHandler(filename, transformed.code, config);
 }
-
+function fileHandler (refPath: string, source: string, config: GlobalConfig) {
+  const isParse = isCompileFile(refPath); 
+  if(isParse) {
+    return createCjsModule(refPath, source, config)
+  }
+}
 function createCjsModule(refPath: string, source: string, config: GlobalConfig) {
   const require = function (relPath) {
     let module
-    console.error('require', relPath);
+    console.error('require', relPath, refPath);
     switch (relPath) {
       case 'react':
         return config.React;
       case 'react-dom':
         return config.ReactDOM;
     }
+    const realPath = defaultPathResolve({ refPath, relPath}).toString()
     if(config.parser.moduleParser) {
-      module = config.parser.moduleParser(relPath, config)
+      module = config.parser.moduleParser(realPath, config)
     }
-    return module || parseSingleFile(config.files, relPath, config);
+    if(isCompileFile(relPath)) {
+      return parseSingleFile(config.files, realPath, config);
+    }else{
+      const fileType = getFileType(relPath)
+      config.module[fileType] && config.module[fileType](realPath, config.files[realPath])
+    }
+    return module
   };
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const pathResolve = function ({ refPath, relPath }) {
-    console.warn('pathResolve', refPath, relPath);
-    return config.files[refPath];
+    console.warn('pathResolve', refPath);
+    if(config.parser.pathParser) {
+      config.parser.pathParser(refPath, relPath, config);
+    }
   };
   const importFunction = async function (relPath: string) {
     console.log('importFunction', relPath);
     return parseSingleFile(config.files, relPath, config);
   };
-
   const module = {
     exports: {},
   };
-  console.log(source);
   Function('exports', 'require', 'module', '__filename', '__dirname', 'import__', source).call(module.exports, module.exports, require, module, refPath, pathResolve({ refPath, relPath: '.' }), importFunction);
- 
   console.log(module, refPath, 'createCjsModule');
   return module.exports;
 }
-// console.log(window.vdom = createCjsModule('./app.js', moduleCache['./app.js']), '---');

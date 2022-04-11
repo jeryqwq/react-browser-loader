@@ -9,17 +9,37 @@ const config = {
   el: document.getElementById('app') as HTMLElement,
   React: window.React as any,
   ReactDOM: window.ReactDOM as any,
-  entry: './app.js',
+  entry: '/app.js',
   addStyle: (str) => {
     console.log(`you should add style, content:${str}`)
   },
   files: {
-      './demo.jpg': `http://10.28.184.32/ssa-vis/vis-components/react-browser-loader/raw/main/demo.jpg`,
-      './demo2.jpg': `https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg`,
-      './app.js': `
+      '/demo.jpg': `https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg`,
+      '/style.scss': `div{
+        h1{
+          color: red
+        }
+      }`,
+      '/a/a.jsx': `
+      export default function (props) {
+        return <div> render a/a/.jsx</div>
+      }
+        `,
+        '/a/b.jsx': `
+        import B from './a.jsx';
+        export default function (props) {
+          return <div> render a/b/.jsx
+          <br />
+          Child: <B />
+          </div>
+        }
+          `,
+      '/app.js': `
         import CompA from './a.js';
         import  {useState} from 'react';
-        // import demo from './demo.jpg';
+        import demo from './demo.jpg';
+        import Ab from '/a/b.jsx';
+        import './style.scss'
         const a = <div style={{color: 'red'}}>456</div>
         export const b = 3;
         export default function (props) {
@@ -27,19 +47,24 @@ const config = {
           const [count, setCount] = useState(0)
           return <div>
           <h1 >Count: {count}</h1>
+          <img src={demo}/>
           <h1 style={{color: 'red', cursor: 'pointer'}} onClick={() => setCount(count + 1)}>这是appjs组件 点我++</h1>
           <CompA />
+          <Ab />
           </div>
         }
       `,
-      './a.js': `
+      '/a.js': `
         import  {useState} from 'react';
+        import CompA from './CompA.jsx'
         export default function () {
           const [count, setCount] = useState(0)
-          return <div  onClick={() =>setCount(count + 1)}>a.js CompA counter: {count}</div>
+          return <div  onClick={() =>setCount(count + 1)}>a.js CompA counter: {count}
+          <CompA a='123'/>
+          </div>
         }
       `,
-    './index.jsx': `
+    '/index.jsx': `
       import CompA from './CompA.jsx';
       export default function () {
         return (
@@ -49,7 +74,7 @@ const config = {
         )
       }
     `,
-    './CompA.jsx': `
+    '/CompA.jsx': `
     export default function (props) {
       console.log(props, '================================')
       return (
@@ -61,7 +86,19 @@ const config = {
     `
   },
   parser: {
-    
+    moduleParser (path, config) {
+      if(path.endsWith('.jpg')) {
+        return config.files[path]
+      }
+    }
+  },
+  module: {
+    scss: (path, source) => {
+      console.log(path, source)
+    },
+    stylus: () => {
+
+    }
   }
 }
 const App = loader(config)

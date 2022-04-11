@@ -4,8 +4,8 @@
   "description": "在前端编译react多文件代码，包含插件机制，基于此定制开发专属你的前端物料平台",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "npx webpack serve",
-    "build": "npx webpack  build",
+    "dev": "npx webpack serve ",
+    "build": "npx webpack --env production  build ",
     "clean": "rm -rf build",
     "test": "jest --env=jsdom --colors --coverage test"
   },
@@ -26,6 +26,7 @@
     "@babel/preset-react": "^7.16.7",
     "assert": "^2.0.0",
     "buffer": "^6.0.3",
+    "path": "^0.12.7",
     "path-browserify": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
