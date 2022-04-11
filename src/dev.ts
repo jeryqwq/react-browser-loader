@@ -47,7 +47,7 @@ const config = {
           const [count, setCount] = useState(0)
           return <div>
           <h1 >Count: {count}</h1>
-          <img src={demo}/>
+          <img src={demo} style={{width: 200}}/>
           <h1 style={{color: 'red', cursor: 'pointer'}} onClick={() => setCount(count + 1)}>这是appjs组件 点我++</h1>
           <CompA />
           <Ab />
