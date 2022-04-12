@@ -1,7 +1,6 @@
 import {
   traverse,
   NodePath,
-  transformFromAstAsync as babel_transformFromAstAsync,
   types as t,
 } from '@babel/core';
 import {
