@@ -4,7 +4,6 @@ declare type GlobalConfig = {
   React: any,
   ReactDOM: any,
   entry: string, // 入口文件
-  addStyle:(styleContent: string) => void,
   parser: {
     moduleParser?: (relaPath: string, config: GlobalConfig) => any,
     pathParser?:(relPath: string,refPath: string, config: GlobalConfig) => string, // 钩子， 解析文件后会调用执行, 如 addStyle, 解析scss...

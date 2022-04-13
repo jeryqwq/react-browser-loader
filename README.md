@@ -92,7 +92,7 @@ const config = {
     `
   },
   parser: {
-    moduleParser (path, config) {
+    moduleParser (path, config) { // 处理非编译情况下的代码, 即除去js, ts, jsx, tsx之外的
       if(path.endsWith('.jpg')) {
         return config.files[path]
       }

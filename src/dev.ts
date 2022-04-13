@@ -10,9 +10,6 @@ const config = {
   React: window.React as any,
   ReactDOM: window.ReactDOM as any,
   entry: '/app.js',
-  addStyle: (str) => {
-    console.log(`you should add style, content:${str}`)
-  },
   files: {
       '/demo.jpg': `https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg`,
       '/style.scss': `div{
@@ -94,9 +91,9 @@ const config = {
   },
   module: {
     scss: (path, source) => {
-      console.log(path, source)
+      console.log(path, source); // 解析scss
     },
-    stylus: () => {
+    stylus: (path, source) => { // 解析stylus
 
     }
   }
