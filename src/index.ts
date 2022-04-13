@@ -28,7 +28,6 @@ function parseSingleFile(files: Record<string, string>, filename: string, config
     sourceFilename: filename,
     plugins: ['jsx'],
   }); // 是否做一些编译器前的语法转换
-  console.log(ast, '---');
   const deps = parseDeps(ast); // 获取当前文件依赖， 是否兼容后期做打包功能
   const transformed = babel_transformFromAstSync(ast, '', {
     presets: [preset_react],
@@ -51,29 +50,27 @@ function fileHandler (refPath: string, source: string, config: GlobalConfig) {
 function createCjsModule(refPath: string, source: string, config: GlobalConfig) {
   const require = function (relPath) {
     let module
-    console.error('require', relPath, refPath);
-    switch (relPath) {
+    switch (relPath) { // support react api
       case 'react':
         return config.React;
       case 'react-dom':
         return config.ReactDOM;
     }
-    const realPath = defaultPathResolve({ refPath, relPath}).toString()
+    const realPath = defaultPathResolve({ refPath, relPath}).toString() // path reslove refPath: in '/a/b/c.jsx' import './b.jsx', should find '/a/b/b.jsx'
     if(config.parser.moduleParser) {
       module = config.parser.moduleParser(realPath, config)
     }
-    if(isCompileFile(relPath)) {
+    if(isCompileFile(relPath)) { // only compile ts, js, jsx 
       return parseSingleFile(config.files, realPath, config);
     }else{
       const fileType = getFileType(relPath)
-      config.module[fileType] && config.module[fileType](realPath, config.files[realPath])
+      config.module[fileType] && config.module[fileType](realPath, config.files[realPath]) // module reslove css, png,scss...
     }
     return module
   };
   // eslint-disable-next-line @typescript-eslint/no-shadow
-  const pathResolve = function ({ refPath, relPath }) {
-    console.warn('pathResolve', refPath);
-    if(config.parser.pathParser) {
+  const pathResolve = function ({ refPath, relPath }) { // hooks, file loaded
+    if(config.parser.pathParser) { // here you should add your effect, such as append css element, compile scss to css ...
       config.parser.pathParser(refPath, relPath, config);
     }
   };
@@ -85,6 +82,5 @@ function createCjsModule(refPath: string, source: string, config: GlobalConfig) 
     exports: {},
   };
   Function('exports', 'require', 'module', '__filename', '__dirname', 'import__', source).call(module.exports, module.exports, require, module, refPath, pathResolve({ refPath, relPath: '.' }), importFunction);
-  console.log(module, refPath, 'createCjsModule');
   return module.exports;
 }
