@@ -1,8 +1,12 @@
 # react-browser-loader
 在前端浏览器环境内编译react多文件代码，包含插件机制，可基于此定制开发专属你的前端在线编码平台或者前端物料平台
-<img src="./demo.png"/>
+### Vue
+<img src="./vue.png"/>
 <br/>
-<img src="./demo2.png"/>
+
+### React
+
+<img src="./react.png"/>
 
 <br/>
 
