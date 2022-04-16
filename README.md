@@ -11,6 +11,7 @@
 <br/>
 
 ### Demo
+地址: https://codesandbox.io/s/react-browser-loader-fxil59?file=/src/App.js
 ```js
 import loader from 'react-browser-loader'
 import React from 'react';
@@ -112,7 +113,7 @@ const config = {
   }
 }
 const App = loader(config)
-window.ReactDOM.render(window.React.createElement(App.default,  {a: 1}), config.el)
+ReactDOM.render(React.createElement(App.default,  {a: 1}), config.el)
 
 
 
