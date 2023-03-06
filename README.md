@@ -1,8 +1,8 @@
 # react-browser-loader
 在前端浏览器环境内编译react多文件代码，包含插件机制，可基于此定制开发专属你的前端在线编码平台或者前端物料平台
 
-[![NPM version](https://img.shields.io/npm/v/@jeryqwq/react-browser-loader.svg?style=flat)](https://npmjs.org/package/@jeryqwq/react-browser-loader)
-[![NPM downloads](http://img.shields.io/npm/dm/@jeryqwq/react-browser-loader.svg?style=flat)](https://npmjs.org/package/@jeryqwq/react-browser-loader)
+[![NPM version](https://img.shields.io/npm/v/react-browser-loader.svg?style=flat)](https://npmjs.org/package/react-browser-loader)
+[![NPM downloads](http://img.shields.io/npm/dm/react-browser-loader.svg?style=flat)](https://npmjs.org/package/react-browser-loader)
 
 ### Vue
 <img src="./vue.png"/>
